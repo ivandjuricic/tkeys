@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from tkinter import *
 
 from tkeys.options import validate_kwarg_, set_defaults_
@@ -21,12 +22,19 @@ class NumKeyPad:
 
     @staticmethod
     def geometry_manager_change(parent):
-        ordering = "top"
         if not parent.winfo_children():
             raise AttributeError("No child widgets on parent")
+
+        # Checking geometry manager and sides of packing
         first_widget = parent.winfo_children()[0]
-        if first_widget.winfo_manager() == "pack":
+        if first_widget.winfo_manager() == "grid":
+            return
+
+        elif first_widget.winfo_manager() == "pack":
             ordering = first_widget.pack_info()["side"]
+
+        else:
+            raise NotImplementedError("Not implemented for place management\nSoon to come")
 
         children_list = []
         for child in parent.winfo_children():
@@ -58,11 +66,10 @@ class NumKeyPad:
             self.frame.grid(column=999, row=0, rowspan=999)
 
         buttons = [str(x + 1) for x in range(9)] + ["0", "←", "↵"]
-        try:
-            if self.layout == "grid":
-                buttons[9], buttons[10] = buttons[10], buttons[9]
-        except AttributeError:
-            self.layout = "line"
+
+        if self.layout == "grid":
+            buttons[9], buttons[10] = buttons[10], buttons[9]
+
 
         for i, text in enumerate(buttons):
             s = Button(self.frame,
@@ -78,7 +85,6 @@ class NumKeyPad:
                 s.grid(row=r, column=c)
 
     def enter_key(self, value, entry):
-        v, e = value, entry
         if value == "←":
             nums_till_last = entry.get()[:-1]
             entry.delete(0, END)
