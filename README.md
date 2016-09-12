@@ -8,6 +8,16 @@
 
 ### Then just go with TkKeys
 
+## Features
+
+#### tkinter keyboard with only one line of code
+
+#### browsing trough all entry widgets of the given parent
+
+#### compatible with tkinter button styles (background, foreground colors, fonts etc)
+
+#### placement of the keyboard can be changed
+
 ## Installation
 
 * Clone the repo ```git clone https://github.com/ivandjuricic/tkeys```
@@ -16,9 +26,17 @@
 
 * Install: ```~$: python setup.py install```
 
-* Requirements: 
-    * for Python2: 
-        * future
+
+or with pip:
+```~$: pip install git+https://github.com/ivandjuricic/tkeys```
+
+
+## Requirements: 
+### For Python2: 
+* future
+
+### For Python3:
+* you're all set
 
 
 ## Usage
@@ -32,8 +50,10 @@ from tkinter import *
 class Main:
     def __init__(self, master):
         self.master = master
-        self.entry_widget = Entry(self.master)
-        self.entry_widget.pack()
+        self.entry_widget1 = Entry(self.master)
+        self.entry_widget1.pack()
+        self.entry_widget2 = Entry(self.master)
+        self.entry_widget2.pack()
         
 root = Tk()
 app = Main(root)
@@ -42,9 +62,9 @@ root.mainloop()
 
 * import tkeys keyboard: ```from tkeys.numeric_keypad import NumKeyPad``` 
 
-* add to class when all entry widgets are loaded ```NumKeyPad(self.master)``` 
+* add ```NumKeyPad(parent=self.master)``` to  the end of the \__init__ of the tkinter GUI class  
 
-* Code you will end up: 
+* Code you will look something like this: 
 
 ```python
 from tkinter import *
@@ -54,8 +74,10 @@ from tkeys.numeric_keypad import NumKeyPad
 class Main:
     def __init__(self, master):
         self.master = master
-        self.entry_widget = Entry(self.master)
-        self.entry_widget.pack()
+        self.entry_widget1 = Entry(self.master)
+        self.entry_widget1.pack()
+        self.entry_widget2 = Entry(self.master)
+        self.entry_widget2.pack()
         
         NumKeyPad(parent=self.master)
         
@@ -66,13 +88,15 @@ root.mainloop()
 
 * Uppon running the script when you focus and Entry widget, Numeric keyboard will show up at in UI
 
-* Use "b" button for backspace
+* Use "←" button as backspace (deletes last key entered)
+
+* Use "↵" button when entered correct number to advance to second Entry widget input
 
 
 
 ## TODOs
 
-* Make better looking UI
+* Make better looking UI - done
 
 * Add a close key
 

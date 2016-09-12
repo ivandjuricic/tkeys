@@ -59,7 +59,6 @@ class NumKeyPad:
             elif self.side == "right":
                 self.keyboard_frame.grid(column=999, row=0, rowspan=999)
         else:
-            print self.gm
             if self.side == "bottom":
                 self.keyboard_frame.place(rely=0.98, relx=0.5, anchor=S)
             elif self.side == "right":
