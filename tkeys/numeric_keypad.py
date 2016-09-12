@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from tkinter import *
+from Tkinter import *
 from tkeys.geometry_manipulation import *
 from tkeys.options import tk_kwargs
 from tkeys.options import validate_kwarg_, set_defaults_
@@ -69,15 +69,16 @@ class NumKeyPad:
         for i, text in enumerate(buttons):
             s = Button(self.keyboard_frame,
                        text=text,
-                       width=round(0.005 * width),
-                       height=round(0.005 * width),
                        command=lambda name=text, w=widget: self.enter_key(name, w))
             s.config(self.button_options)
             if self.layout in ["line", None]:
                 s.pack(side=LEFT, expand=True)
             elif self.layout is "grid":
                 r, c = i // 3, i % 3
-                self.keyboard_frame.grid_anchor(anchor=CENTER)
+                try:
+                    self.keyboard_frame.grid_anchor(anchor=CENTER)
+                except AttributeError:
+                    pass
                 s.grid(row=r, column=c)
 
     def enter_key(self, value, entry):

@@ -1,6 +1,5 @@
 valid_kwargs = {"layout": ["grid", "line"],
                 "side": ["bottom", "top", "left", "right"],
-                "size": [x for x in range(8, 150)],
                 }
 
 tk_kwargs = ["activebackground", "activeforeground", "background", "bg", "bd", "borderwidth",
