@@ -1,24 +1,24 @@
 # -*- coding: utf-8 -*-
 from tkinter import *
-
+from tkeys.geometry_manipulation import *
+from tkeys.options import tk_kwargs
 from tkeys.options import validate_kwarg_, set_defaults_
 
 
 class NumKeyPad:
-
     def __init__(self, parent, **kwargs):
+        self.button_options = {}
         set_defaults_(self)
-        self.parent = parent
-        self.frame = None
-        self.widget_list = []
-
         for key in kwargs:
             validate_kwarg_(key, kwargs[key])  # NAMING CONVENTION?!
             if key in kwargs:
+                if key in tk_kwargs:
+                    self.button_options[key] = kwargs[key]
                 setattr(self, key, kwargs[key])
-
+        self.parent = parent
+        self.keyboard_frame = None
+        self.widget_list = []
         self.widget_bindings()
-        self.geometry_manager_change(self.parent)
 
     @staticmethod
     def geometry_manager_change(parent):
@@ -28,23 +28,11 @@ class NumKeyPad:
         # Checking geometry manager and sides of packing
         first_widget = parent.winfo_children()[0]
         if first_widget.winfo_manager() == "grid":
-            return
-
+            from_grid(parent)
         elif first_widget.winfo_manager() == "pack":
-            ordering = first_widget.pack_info()["side"]
-
+            from_pack(parent)
         else:
-            raise NotImplementedError("Not implemented for place management\nSoon to come")
-
-        children_list = []
-        for child in parent.winfo_children():
-            child.pack_forget()
-            children_list.append(child)
-        for i, child in enumerate(children_list):
-            if ordering in ["top", "bottom"]:
-                child.grid(column=0, row=i)
-            else:
-                child.grid(row=0, column=i)
+            pass
 
     def widget_bindings(self):
         for widget in self.parent.winfo_children():
@@ -55,33 +43,41 @@ class NumKeyPad:
                 widget.bind("<Button-1>", lambda w: self.close_keyboard())
 
     def init_keyboard(self, widget):
-        if self.frame:
-            self.frame.destroy()
+        gm = self.geometry_manager_change(self.parent)
+
+        if self.keyboard_frame:
+            self.keyboard_frame.destroy()
 
         width, height = self.parent.winfo_height(), self.parent.winfo_width()
-        self.frame = Frame(self.parent, padx=1, pady=1)
-        if self.side == "bottom":
-            self.frame.grid(row=999, column=0, columnspan=999)
-        elif self.side == "right":
-            self.frame.grid(column=999, row=0, rowspan=999)
+        self.keyboard_frame = Frame(self.parent)
+
+        if gm in ["pack", "place"]:
+            if self.side == "bottom":
+                self.keyboard_frame.grid(row=999, column=0, columnspan=999)
+            elif self.side == "right":
+                self.keyboard_frame.grid(column=999, row=0, rowspan=999)
+        else:
+            if self.side == "bottom":
+                self.keyboard_frame.place(rely=0.98, relx=0.5, anchor=S)
+            elif self.side == "right":
+                self.keyboard_frame.place(rely=0.5, relx=0.98, anchor=E)
 
         buttons = [str(x + 1) for x in range(9)] + ["0", "←", "↵"]
-
         if self.layout == "grid":
             buttons[9], buttons[10] = buttons[10], buttons[9]
 
-
         for i, text in enumerate(buttons):
-            s = Button(self.frame,
+            s = Button(self.keyboard_frame,
                        text=text,
                        width=round(0.005 * width),
                        height=round(0.005 * width),
                        command=lambda name=text, w=widget: self.enter_key(name, w))
+            s.config(self.button_options)
             if self.layout in ["line", None]:
                 s.pack(side=LEFT, expand=True)
             elif self.layout is "grid":
-                r, c = i//3, i % 3
-                self.frame.grid_anchor(anchor=CENTER)
+                r, c = i // 3, i % 3
+                self.keyboard_frame.grid_anchor(anchor=CENTER)
                 s.grid(row=r, column=c)
 
     def enter_key(self, value, entry):
@@ -105,7 +101,7 @@ class NumKeyPad:
 
     def close_keyboard(self):
         try:
-            self.frame.destroy()
+            self.keyboard_frame.destroy()
         except AttributeError:
             return
-        self.frame = None
+        self.keyboard_frame = None
