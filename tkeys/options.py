@@ -1,3 +1,6 @@
+from tkinter import Button
+from tkinter.font import Font
+
 valid_kwargs = {"layout": ["grid", "line"],
                 "side": ["bottom", "top", "left", "right"],
                 }
@@ -8,8 +11,15 @@ tk_kwargs = ["activebackground", "activeforeground", "background", "bg", "bd", "
 
 
 def set_defaults_(cls):
+    font = 0
     for key in valid_kwargs.keys():
         setattr(cls, key, valid_kwargs[key][0])
+        if key is "font":
+            font = 1
+    if font == 0:
+        setattr(cls, "font", ("Ubuntu", 10))
+
+
 
 
 def validate_kwarg_(key, value):
