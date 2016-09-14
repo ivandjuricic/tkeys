@@ -22,22 +22,8 @@ class NumKeyPad:
         self.parent = parent
         self.keyboard_frame = None
         self.widget_list = []
-        self.gm = self.geometry_manager_change(self.parent)
+        self.gm = geometry_manager_change_(self.parent)
         self.widget_bindings()
-
-    @staticmethod
-    def geometry_manager_change(parent):
-        if not parent.winfo_children():
-            raise AttributeError("No child widgets on parent")
-
-        # Checking geometry manager and sides of packing
-        first_widget = parent.winfo_children()[0]
-        if first_widget.winfo_manager() == "grid":
-            from_grid(parent)
-        elif first_widget.winfo_manager() == "pack":
-            from_pack(parent)
-        else:
-            from_place(parent)
 
     def widget_bindings(self):
         for widget in self.parent.winfo_children():
@@ -47,25 +33,8 @@ class NumKeyPad:
             else:
                 widget.bind("<Button-1>", self.close_keyboard)
 
-    def init_container(self):
-        if self.keyboard_frame:
-            self.keyboard_frame.destroy()
-
-        self.keyboard_frame = Frame(self.parent)
-
-        if self.gm in ["pack", "place"]:
-            if self.side == "bottom":
-                self.keyboard_frame.grid(row=999, column=0, columnspan=999)
-            elif self.side == "right":
-                self.keyboard_frame.grid(column=999, row=0, rowspan=999)
-        else:
-            if self.side == "bottom":
-                self.keyboard_frame.place(rely=0.98, relx=0.5, anchor=S)
-            elif self.side == "right":
-                self.keyboard_frame.place(rely=0.5, relx=0.98, anchor=E)
-
     def init_keyboard(self, widget):
-        self.init_container()
+        init_container_(self)
         buttons = [str(x + 1) for x in range(9)] + ["0", "←", "↵"]
         if self.layout == "grid":
             buttons[9], buttons[10] = buttons[10], buttons[9]

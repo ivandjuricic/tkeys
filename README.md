@@ -1,4 +1,4 @@
-# TkKeys
+# tkeys
 
 * Have a touch-screen but you think other system keyboards are overkill?
  
@@ -6,17 +6,19 @@
 
 * You want something as simple as possible? 
 
-### Then just go with TkKeys
+#### Then just go with tkeys
 
 ## Features
 
-#### tkinter keyboard with only one line of code
+#### - tkinter keyboard with only one line of code
 
-#### browsing trough all entry widgets of the given parent
+#### - browsing trough all entry widgets of the given parent
 
-#### compatible with tkinter button styles (background, foreground colors, fonts etc)
+#### - work with grid, pack and place layout manager
 
-#### placement of the keyboard can be changed
+#### - compatible with tkinter button styles (background, foreground colors, fonts etc)
+
+#### - placement of the keyboard can be changed
 
 ## Installation
 
@@ -60,7 +62,7 @@ app = Main(root)
 root.mainloop()
 ```
 
-* import tkeys keyboard: ```from tkeys.numeric_keypad import NumKeyPad``` 
+* import tkeys keyboard: ```from tkeys.numeric import NumKeyPad``` 
 
 * add ```NumKeyPad(parent=self.master)``` to  the end of the \__init__ of the tkinter GUI class  
 
@@ -68,7 +70,7 @@ root.mainloop()
 
 ```python
 from tkinter import *
-from tkeys.numeric_keypad import NumKeyPad
+from tkeys.numeric import NumKeyPad
 
 
 class Main:
