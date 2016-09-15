@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import sys
-from tkeys.options import tk_kwargs
-from tkeys.options import validate_kwarg_, set_defaults_
+from tkeys.validation import *
 from tkeys.geometry_manipulation import *
+from tkeys.const import *
 import time
 
 if sys.version_info[0] == 2:
@@ -20,7 +20,7 @@ class AlphaNumericKeyPad:
         for key in kwargs:
             validate_kwarg_(key, kwargs[key])  # NAMING CONVENTION?!
             if key in kwargs:
-                if key in tk_kwargs:
+                if key in TK_KWARGS:
                     self.button_options[key] = kwargs[key]
                 setattr(self, key, kwargs[key])
 
@@ -29,6 +29,7 @@ class AlphaNumericKeyPad:
         self.gm = geometry_manager_change_(self.parent)
         self.widget_bindings()
         self.t = None
+        self.shift = False
 
     def widget_bindings(self):
         for widget in self.parent.winfo_children():
@@ -40,10 +41,9 @@ class AlphaNumericKeyPad:
 
     def init_keyboard(self, widget):
         init_container_(self)
-        buttons = [".,?!", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz",
-                   "0+-/=", "⇧", "←"]
 
-        for i, text in enumerate(buttons):
+
+        for i, text in enumerate(ALPHANUMERIC_BUTTONS_TEXT):
             s = Button(self.keyboard_frame,
                        text=text,
                        width=int(self.font[1] * 0.25),
@@ -71,34 +71,35 @@ class AlphaNumericKeyPad:
             s.grid(row=5, column=0, columnspan=3)
 
     def key_press(self, value, entry):
-        buttons_chars = [".,?!1:;", "abc2", "def3", "ghi4", "jkl5", "mno6",
-                        "pqrs7", "tuv8", "wxyz9", "0-_+=/", "⇧", "←", "↵"]
-        prev_char = entry.get()[-1:]
-        if value >9:
+        prev_char = entry.get()[-1:].lower()
+        if value > 9:
             self.special(entry, value)
             return
 
         if prev_char == "":
             self.t = time.time()
-            next_char = buttons_chars[value][0]
-            entry.insert(END, next_char)
+            next_char = ALPHANUMERIC_CHARS[value][0]
+            #entry.insert(END, next_char)
         else:
-            prev_char_set = [x for x in buttons_chars if prev_char in x][0]
+            prev_char_set = [x for x in ALPHANUMERIC_CHARS if prev_char in x][0]
 
-            if buttons_chars[value] == prev_char_set:
+            if ALPHANUMERIC_CHARS[value] == prev_char_set:
                 next_char = self.on_same_key(prev_char_set, prev_char)
                 if time.time() - self.t < 1.5:
-                    new_string = entry.get()[:-1] + next_char
+                    if self.shift == True:
+                        next_char = next_char.upper()
+                    prev_string = entry.get()[:-1]
                     entry.delete(0, END)
-                    entry.insert(END, new_string)
-                    self.t = time.time()
+                    entry.insert(END, prev_string)
                 else:
-                    entry.insert(END, buttons_chars[value][0])
+                    next_char = ALPHANUMERIC_CHARS[value][0]
                     self.t = time.time()
             else:
-                next_char = buttons_chars[value][0]
-                entry.insert(END, next_char)
-                self.t = time.time()
+                next_char = ALPHANUMERIC_CHARS[value][0]
+        if self.shift == True:
+            next_char = next_char.upper()
+        entry.insert(END, next_char)
+        self.t = time.time()
 
     @staticmethod
     def on_same_key(all_char, prev):
@@ -109,7 +110,7 @@ class AlphaNumericKeyPad:
 
     def special(self, entry, value):
         if value == 10:
-            print("shift")
+            self.on_shift_key(value)
         elif value == 11:
             nums_till_last = entry.get()[:-1]
             entry.delete(0, END)
@@ -117,6 +118,15 @@ class AlphaNumericKeyPad:
         else:
             self.on_return_key(entry)
 
+    def on_shift_key(self, value):
+        if self.shift is False:
+            for button in self.keyboard_frame.winfo_children():
+                button.config(text=button["text"].upper())
+            self.shift = True
+        else:
+            for i, button in enumerate(self.keyboard_frame.winfo_children()):
+                button.config(text=ALPHANUMERICS_ALL[i])
+                self.shift = False
 
     def on_return_key(self, widget):
         try:

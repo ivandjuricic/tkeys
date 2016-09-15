@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import sys
-from tkeys.options import tk_kwargs
-from tkeys.options import validate_kwarg_, set_defaults_
+from tkeys.validation import *
 from tkeys.geometry_manipulation import *
 if sys.version_info[0] == 2:
     from Tkinter import *
@@ -16,7 +15,7 @@ class NumKeyPad:
         for key in kwargs:
             validate_kwarg_(key, kwargs[key])  # NAMING CONVENTION?!
             if key in kwargs:
-                if key in tk_kwargs:
+                if key in TK_KWARGS:
                     self.button_options[key] = kwargs[key]
                 setattr(self, key, kwargs[key])
         self.parent = parent
