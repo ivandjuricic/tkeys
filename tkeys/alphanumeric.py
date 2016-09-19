@@ -37,11 +37,10 @@ class AlphaNumericKeyPad:
                 widget.bind("<ButtonRelease-1>", lambda w=widget: self.init_keyboard(w.widget))
                 self.widget_list.append(widget)
             else:
-                widget.bind("<Button-1>", self.close_keyboard)
+                widget.bind("<Button>", self.close_keyboard)
 
     def init_keyboard(self, widget):
         init_container_(self)
-
 
         for i, text in enumerate(ALPHANUMERIC_BUTTONS_TEXT):
             s = Button(self.keyboard_frame,
@@ -136,6 +135,10 @@ class AlphaNumericKeyPad:
             return
         self.parent.nametowidget(next_widget).focus_set()
         self.init_keyboard(next_widget)
+
+    @staticmethod
+    def func2():
+        print("bind2")
 
     def close_keyboard(self, *args):
         try:
