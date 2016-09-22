@@ -30,7 +30,8 @@ class NumKeyPad:
                 widget.bind("<ButtonRelease-1>", lambda w=widget: self.init_keyboard(w.widget))
                 self.widget_list.append(widget)
             else:
-                widget.bind("<Button-1>", self.close_keyboard)
+                pass
+                widget.bind("<Button>", self.close_keyboard, "+")
 
     def init_keyboard(self, widget):
         init_container_(self)

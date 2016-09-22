@@ -37,7 +37,7 @@ class AlphaNumericKeyPad:
                 widget.bind("<ButtonRelease-1>", lambda w=widget: self.init_keyboard(w.widget))
                 self.widget_list.append(widget)
             else:
-                widget.bind("<Button>", self.close_keyboard)
+                widget.bind_class("<Button>", self.close_keyboard, "+")
 
     def init_keyboard(self, widget):
         init_container_(self)
