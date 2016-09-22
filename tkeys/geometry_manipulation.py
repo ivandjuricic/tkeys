@@ -46,6 +46,10 @@ def init_container_(cls):
 
     cls.keyboard_frame = Frame(cls.parent)
 
+    if "place" in cls.__dict__:
+        cls.keyboard_frame.place(relx=cls.place[0], rely=cls.place[1], anchor=cls.place[2])
+        return
+
     if cls.gm in ["pack", "place"]:
         if cls.side == "bottom":
             cls.keyboard_frame.grid(row=999, column=0, columnspan=999)
