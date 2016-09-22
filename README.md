@@ -134,19 +134,6 @@ root.mainloop()
                           font=("tahoma", 20))
         ```
 
-## TODOs
-
-* Make better looking UI - done
-
-* Add a close key
-
-* Manipulating tkKeys interface to fit any other user interace with simple keyword arguments
-
-* Make a full on-screen keyboard
-
-* Fix bindings of exit keyboard
-
-
 ## Support
 
 Please [open an issue](https://github.com/ivandjuricic/tkKeys/issues/new) for support.
